@@ -1,0 +1,35 @@
+#version: "3.8"
+
+services:
+  pickbot:
+    image: pickbot_ubuntu22
+    container_name: pickbot_ws
+    network_mode: host
+    privileged: true
+    tty: true
+    stdin_open: true
+    environment:
+      ROS_DOMAIN_ID: 42  
+      RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+      QT_X11_NO_MITSHM: "1"
+      DISPLAY: $DISPLAY
+      NVIDIA_VISIBLE_DEVICES: all           
+      NVIDIA_DRIVER_CAPABILITIES: all 
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile
+    volumes:  
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ../ws:/ws/
+      - /dev:/dev
+      - ~/.Xauthority:/home/user/.Xauthority:rw
+    deploy:                                 
+        resources:
+          reservations:
+            devices:
+              - driver: nvidia
+                count: all
+                capabilities: [gpu]
+    working_dir: /ws
+    command: bash
+
