@@ -1,26 +1,28 @@
-#version: "3.8"
-
 services:
   dualbot:
-    image: dualbot_ubuntu22
+    image: dualbot_jazzy_ubuntu24
     container_name: dualbot_ws
     network_mode: host
     privileged: true
+    ipc: host
     tty: true
     stdin_open: true
     environment:
-      ROS_DOMAIN_ID: 42  
+      ROS_DISTRO: jazzy
+      ROS_DOMAIN_ID: 42
       RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
       QT_X11_NO_MITSHM: "1"
-      DISPLAY: $DISPLAY
-    build: 
+      DISPLAY: ${DISPLAY}
+      XAUTHORITY: /root/.Xauthority
+    build:
       context: ../
       dockerfile: docker/Dockerfile
-    volumes:  
+      args:
+        ROS_DISTRO: jazzy
+    volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ../ws:/ws/
       - /dev:/dev
-      - ~/.Xauthority:/home/user/.Xauthority:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
     working_dir: /ws
-    command: bash
-
+    command: bash 
