@@ -1,0 +1,23 @@
+---
+services:
+  soup:
+    image: "universalrobots/ursim_cb3"
+    container_name: soup_ursim_ur10
+    networks:
+      ursim_net_soup:
+        ipv4_address: 192.168.56.101
+    ports:
+      - "6083:6080"
+      - "5903:5900"
+    environment:
+      ROBOT_MODEL: "UR10"
+    volumes:
+      - ./persistent_storage_soup/programs:/ursim/programs
+      - ./persistent_storage_soup/urcaps:/urcaps
+
+networks:
+  ursim_net_soup:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.56.0/24

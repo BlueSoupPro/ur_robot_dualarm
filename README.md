@@ -99,6 +99,75 @@ Then in the URSim web UIs run:
 - `external_control_alice.urp`
 - `external_control_bob.urp`
 
+## Hybrid Setup: One Simulated UR10 (`soup`) and One Real UR10
+
+This repository can also run in a mixed setup:
+
+- `alice` = simulated UR10 (`soup`)
+- `bob` = real UR10
+
+Recommended addressing:
+
+- Pickbot PC host: `192.168.10.103`
+- real UR10 (`bob`): `192.168.10.100`
+- simulated UR10 (`soup` / `alice`): `192.168.56.101`
+- Docker bridge gateway seen by `soup`: `192.168.56.1`
+
+The dual-arm control xacro already uses separate ports for the two arms:
+
+- `alice` script sender port: `50007`
+- `bob` script sender port: `50002`
+
+So this mixed layout matches your requirement that the real robot uses port `50002`.
+
+### Start the simulated UR10 (`soup`)
+
+Use the dedicated compose file:
+
+```bash
+cd /home/hanchong/BlueSoupPro/ur_robot_dualarm/ws/src/my_dual_robot_cell/my_dual_robot_cell_control/dual-arm-simulator
+docker compose -f docker-compose.soup.yaml up -d
+```
+
+Web access:
+
+- Soup URSim: `http://localhost:6083`
+
+### Launch the mixed real + sim ROS stack
+
+Inside the Jazzy container:
+
+```bash
+cd /ws
+source install/setup.bash
+ros2 launch my_dual_robot_cell_moveit_config bringup_soup_real.launch.py
+```
+
+This launch defaults to:
+
+- `alice_ur_type:=ur10`
+- `alice_robot_ip:=192.168.56.101`
+- `bob_ur_type:=ur10`
+- `bob_robot_ip:=192.168.10.100`
+
+### External Control targets
+
+Set the External Control targets like this:
+
+- simulated UR10 (`soup` / `alice`): `192.168.56.1:50007`
+- real UR10 (`bob`): `192.168.10.103:50002`
+
+For the real robot, the host shown on the teach pendant can be the PC name `Pickbot PC`, but IP is more reliable. I recommend using `192.168.10.103:50002`.
+
+### Files involved in this hybrid setup
+
+- simulator compose:
+  `ws/src/my_dual_robot_cell/my_dual_robot_cell_control/dual-arm-simulator/docker-compose.soup.yaml`
+- simulator persistent storage:
+  `ws/src/my_dual_robot_cell/my_dual_robot_cell_control/dual-arm-simulator/persistent_storage_soup/`
+- dedicated bringup launch:
+  `ws/src/my_dual_robot_cell/my_dual_robot_cell_moveit_config/launch/bringup_soup_real.launch.py`
+
 ## Changing the Simulated Robot Type in URSim
 
 There are two separate places to think about when changing robot type:
