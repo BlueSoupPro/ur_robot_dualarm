@@ -2,9 +2,13 @@
 services:
   alice:
     image: "universalrobots/ursim_e-series"
+    container_name: dual_ursim_alice
     networks:
       ursim_net_dual_arm:
         ipv4_address: 192.168.57.101
+    ports:
+      - "6081:6080"
+      - "5901:5900"
     environment:
       ROBOT_MODEL: "UR3"
     volumes:
@@ -12,9 +16,13 @@ services:
       - ./persistent_storage_alice/urcaps:/urcaps
   bob:
     image: "universalrobots/ursim_e-series"
+    container_name: dual_ursim_bob
     networks:
       ursim_net_dual_arm:
         ipv4_address: 192.168.57.100
+    ports:
+      - "6082:6080"
+      - "5902:5900"
     environment:
       ROBOT_MODEL: "UR5"
     volumes:

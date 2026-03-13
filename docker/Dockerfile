@@ -48,7 +48,7 @@ RUN apt update && apt-get install -y --no-install-recommends \
 
 COPY ../ws/ ${WS}/
 
-RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc && \
+RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc 
 
 WORKDIR ${WS}
 
