@@ -1,7 +1,7 @@
 services:
   pickbot:
-    image: pickbot_jazzy_ubuntu24
-    container_name: pickbot_ws
+    image: pickbot_ubuntu24
+    container_name: pickbot_jazzy_ws
     network_mode: host
     privileged: true
     ipc: host

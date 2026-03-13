@@ -1,7 +1,7 @@
 services:
   dualbot:
-    image: dualbot_jazzy_ubuntu24
-    container_name: dualbot_ws
+    image: dualbot_ubuntu24
+    container_name: dualbot_jazzy_ws
     network_mode: host
     privileged: true
     ipc: host
